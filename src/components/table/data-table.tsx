@@ -1,5 +1,5 @@
 'use client'
-import { flexRender } from '@tanstack/react-table';
+import { flexRender, Table as TTable } from '@tanstack/react-table';
 
 import {
     Table,
@@ -10,17 +10,8 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-import { DUMMY_DATA } from '@/constants';
-import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { columns } from './column';
-
-export function DataTable() {
-    const table = useReactTable({
-        data: DUMMY_DATA,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-    });
-
+export function DataTable<TData>({ table }: { table: TTable<TData> }) {
+    const columns = table.getAllColumns();
     return (
         <div className="rounded-md border">
             <Table>

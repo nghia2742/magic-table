@@ -1,7 +1,7 @@
-import { Person } from '@/constants';
+import { Account } from '@/constants';
 import { createColumnHelper } from '@tanstack/react-table';
 
-const columnHelper = createColumnHelper<Person>();
+const columnHelper = createColumnHelper<Account>();
 
 export const columns = [
     columnHelper.accessor('firstName', {
