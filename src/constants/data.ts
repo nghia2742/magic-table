@@ -2,6 +2,7 @@ import { Account } from "./types";
 
 export const DUMMY_DATA: Account[] = [
     {
+      _id: '1111',
       firstName: 'Tanner',
       lastName: 'Smith',
       age: 24,
@@ -9,6 +10,7 @@ export const DUMMY_DATA: Account[] = [
       gender: 'Other',
     },
     {
+      _id: '2222',
       firstName: 'Nancy',
       lastName: 'Miller',
       age: 40,
@@ -16,6 +18,7 @@ export const DUMMY_DATA: Account[] = [
       gender: 'Female',
     },
     {
+      _id: '3333',
       firstName: 'Joe',
       lastName: 'Cook',
       age: 45,

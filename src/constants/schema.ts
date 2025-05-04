@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 export const AccountSchema = z.object({
-    firstName: z.string(),
+    _id: z.string(),
+
+    firstName: z.string().nonempty(),
     lastName: z.string(),
     age: z.number(),
     email: z.string(),
