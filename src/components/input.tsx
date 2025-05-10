@@ -26,13 +26,15 @@ function ControlledInput({ name, control, ...props }: InputProps) {
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         field.onChange(e.target.value);
     };
+
     return (
         <div className="relative">
             <Input
                 title={name}
-                {...props}
+                ref={field.ref}
                 onChange={handleInputChange}
                 className={cn('bg-white', error && 'border-red-500')}
+                {...props}
             />
             {error && (
                 <TooltipProvider>

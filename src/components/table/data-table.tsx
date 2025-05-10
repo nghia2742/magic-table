@@ -19,7 +19,6 @@ type RowProps<T> = {
 };
 
 function MemorizeTableRowComponent<T>({ children }: RowProps<T>) {
-    console.log('Re-render');
     return <>{children}</>;
 }
 
@@ -28,7 +27,6 @@ const MemorizeTableRow = memo(
     (prevProps, nextProps) => {
         const isSameRow = isEqual(prevProps.dataRow, nextProps.dataRow);
         const isSameSelection = prevProps.isSelected === nextProps.isSelected;
-    
         return isSameRow && isSameSelection;
     }
 );
