@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { flexRender, Table as TTable } from '@tanstack/react-table';
 
 import {
@@ -9,6 +9,29 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { memo, ReactNode } from 'react';
+import { isEqual } from 'lodash';
+
+type RowProps<T> = {
+    dataRow: T;
+    children: ReactNode;
+    isSelected: boolean;
+};
+
+function MemorizeTableRowComponent<T>({ children }: RowProps<T>) {
+    console.log('Re-render');
+    return <>{children}</>;
+}
+
+const MemorizeTableRow = memo(
+    MemorizeTableRowComponent,
+    (prevProps, nextProps) => {
+        const isSameRow = isEqual(prevProps.dataRow, nextProps.dataRow);
+        const isSameSelection = prevProps.isSelected === nextProps.isSelected;
+    
+        return isSameRow && isSameSelection;
+    }
+);
 
 export function DataTable<TData>({ table }: { table: TTable<TData> }) {
     const columns = table.getAllColumns();
@@ -37,19 +60,28 @@ export function DataTable<TData>({ table }: { table: TTable<TData> }) {
                 <TableBody>
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
-                            <TableRow
+                            <MemorizeTableRow
                                 key={row.id}
-                                data-state={row.getIsSelected() && 'selected'}
+                                dataRow={row.original}
+                                isSelected={row.getIsSelected()}
                             >
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
-                                        {flexRender(
-                                            cell.column.columnDef.cell,
-                                            cell.getContext()
-                                        )}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
+                                <TableRow
+                                    data-rowindex={row.index}
+                                    data-state={
+                                        row.getIsSelected() && 'selected'
+                                    }
+                                    className='data-[state=selected]:bg-green-50'
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            </MemorizeTableRow>
                         ))
                     ) : (
                         <TableRow>

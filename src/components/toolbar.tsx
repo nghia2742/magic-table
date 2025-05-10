@@ -1,63 +1,45 @@
 'use client';
 
-import React from 'react';
-import { UseFieldArrayReturn, useFormContext } from 'react-hook-form';
-import { Button } from './ui/button';
-import { Info, PlusIcon, Settings, Trash } from 'lucide-react';
 import { Account } from '@/constants';
-import { AccountsSchema } from '@/constants';
-import { z } from 'zod';
-import { Table } from '@tanstack/react-table';
 import { useMode } from '@/context/Context';
+import { Table } from '@tanstack/react-table';
+import { Info, PlusIcon, Settings, Trash } from 'lucide-react';
+import { Button } from './ui/button';
+import { Separator } from './ui/separator';
+
+interface ToolbarProps {
+    table: Table<Account>;
+    onAdd: () => void;
+    onDelete: () => void;
+    onGetInfo: () => void;
+    onCancel: () => void;
+    onSubmit: () => void;
+}
 
 function Toolbar({
-    fieldArray,
     table,
-}: {
-    fieldArray: UseFieldArrayReturn<z.infer<typeof AccountsSchema>>;
-    table: Table<Account>;
-}) {
-    const { prepend, remove } = fieldArray;
-    const { getValues } = useFormContext();
-    const { setMode } = useMode();
+    onAdd,
+    onDelete,
+    onGetInfo,
+    onCancel,
+    onSubmit,
+}: ToolbarProps) {
+    const { mode } = useMode();
 
-    const handleAddRow = () => {
-        setMode('Add');
-        const _id = new Date().getTime().toString();
-        const newAccount: Account = {
-            _id,
-            firstName: '',
-            lastName: '',
-            age: 0,
-            email: '',
-            gender: '',
-        };
-
-        prepend(newAccount);
-        table.setRowSelection((prev) => ({
-            ...prev,
-            [_id]: true,
-        }));
-    };
-
-    const handleDeleteRows = () => {
-        const selectedRows = table.getIsAllRowsSelected()
-            ? Array.from({ length: fieldArray.fields.length }, (v, i) => i)
-            : Object.keys(table.getState().rowSelection).map((rowId) =>
-                  fieldArray.fields.findIndex((r) => r._id === rowId)
-              );
-        remove(selectedRows);
-        table.setRowSelection({});
-        setMode('View')
-    };
-
-    const handleSetting = () => {};
     return (
-        <div className="flex justify-end gap-2  mb-4">
+        <div className="flex items-center justify-end gap-2 mb-4 h-5">
+            {mode !== 'View' && (
+                <>
+                    <Button variant="outline" onClick={onCancel}>
+                        Cancel
+                    </Button>
+                    <Button onClick={onSubmit}>Submit</Button>
+                    <Separator orientation="vertical" />
+                </>
+            )}
             <Button
                 variant="destructive"
-                onClick={handleDeleteRows}
-                className="cursor-pointer"
+                onClick={onDelete}
                 disabled={
                     !table.getIsSomeRowsSelected() &&
                     !table.getIsAllRowsSelected()
@@ -66,27 +48,14 @@ function Toolbar({
                 <Trash /> Delete
             </Button>
 
-            <Button
-                variant="outline"
-                onClick={handleAddRow}
-                className="cursor-pointer"
-            >
+            <Button variant="outline" onClick={onAdd}>
                 <PlusIcon /> Add
             </Button>
-
-            <Button
-                variant="outline"
-                onClick={() => console.log(getValues())}
-                className="cursor-pointer"
-            >
+            <Button variant="outline" onClick={onGetInfo}>
                 <Info />
             </Button>
 
-            <Button
-                variant="outline"
-                onClick={handleSetting}
-                className="cursor-pointer"
-            >
+            <Button variant="outline" onClick={() => {}}>
                 <Settings />
             </Button>
         </div>

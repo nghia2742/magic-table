@@ -1,21 +1,21 @@
+import { Info } from 'lucide-react';
 import React, { ChangeEvent } from 'react';
+import { Control, useController } from 'react-hook-form';
 import { Input } from './ui/input';
-import { useController, useFormContext } from 'react-hook-form';
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from './ui/tooltip';
-import { Button } from './ui/button';
-import { Info } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface InputProps extends React.ComponentProps<'input'> {
     name: string;
+    control: Control;
 }
 
-function ControlledInput({ name, ...props }: InputProps) {
-    const { control } = useFormContext();
+function ControlledInput({ name, control, ...props }: InputProps) {
     const {
         field,
         fieldState: { error },
@@ -32,19 +32,13 @@ function ControlledInput({ name, ...props }: InputProps) {
                 title={name}
                 {...props}
                 onChange={handleInputChange}
-                className={error ? 'border-red-500' : undefined}
+                className={cn('bg-white', error && 'border-red-500')}
             />
             {error && (
                 <TooltipProvider>
                     <Tooltip>
-                        <TooltipTrigger className="absolute right-0 top-0">
-                            <Button
-                                size="icon"
-                                variant="ghost"
-                                className="hover:bg-transparent"
-                            >
-                                <Info className="text-red-500" />
-                            </Button>
+                        <TooltipTrigger className="absolute top-1/2 right-2 -translate-y-1/2">
+                            <Info className="text-red-500 size-4" />
                         </TooltipTrigger>
                         <TooltipContent>{error.message}</TooltipContent>
                     </Tooltip>

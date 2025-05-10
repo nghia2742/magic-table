@@ -1,10 +1,10 @@
 'use client';
 
-import { columns } from '@/components/table/column';
+import { columns } from '@/components/table/columns';
 import { DataTable } from '@/components/table/data-table';
 import Toolbar from '@/components/toolbar';
-import { AccountsSchema, DUMMY_DATA } from '@/constants';
-import { ContextProvider } from '@/context/Context';
+import { Account, AccountsSchema, DUMMY_DATA } from '@/constants';
+import { useMode } from '@/context/Context';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
     getCoreRowModel,
@@ -14,6 +14,12 @@ import {
 import { useState } from 'react';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 
+const MODE_ICON = {
+    View: '👁️',
+    Add: '➕',
+    Edit: '✏️',
+};
+
 export default function Home() {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -22,7 +28,7 @@ export default function Home() {
         defaultValues: {
             accounts: DUMMY_DATA,
         },
-        mode: 'onChange'
+        mode: 'all',
     });
 
     const fieldArray = useFieldArray({
@@ -40,22 +46,81 @@ export default function Home() {
         getCoreRowModel: getCoreRowModel(),
         onRowSelectionChange: setRowSelection,
     });
+    const { append, remove } = fieldArray;
+    const { mode, setMode } = useMode();
+
+    // ------------- 🛠️ Functions ----------------
+
+    const handleAddRow = () => {
+        setMode('Add');
+        const _id = new Date().getTime().toString();
+        const newAccount: Account = {
+            _id,
+            firstName: '',
+            lastName: '',
+            age: 0,
+            email: '',
+            gender: '',
+        };
+
+        append(newAccount);
+        table.setRowSelection((prev) => ({
+            ...prev,
+            [_id]: true,
+        }));
+    };
+
+    const handleDeleteRows = () => {
+        const selectedRows = table.getIsAllRowsSelected()
+            ? Array.from({ length: fieldArray.fields.length }, (v, i) => i)
+            : Object.keys(table.getState().rowSelection).map((rowId) =>
+                  fieldArray.fields.findIndex((r) => r._id === rowId)
+              );
+        remove(selectedRows);
+        table.setRowSelection({});
+        setMode('View');
+    };
+
+    const handleSubmit = () => {
+        console.log('Calling submission...');
+        form.handleSubmit(
+            (data) => console.log({ data }),
+            (errors) => console.log({ errors })
+        )();
+    };
+
+    const handleCancel = () => {
+        form.reset();
+        setRowSelection({});
+        setMode('View');
+    };
 
     return (
-        <ContextProvider>
-            <FormProvider {...form}>
-                <div className="container p-20">
-                    <h2 className="my-10 scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-                        Data Table
-                    </h2>
-                    {/* Toolbar */}
-                    <Toolbar fieldArray={fieldArray} table={table} />
-                    <DataTable table={table} />
-                    <pre className='mt-4'>
-                        <code>Row Selection: {JSON.stringify(rowSelection, null, 2)}</code>
-                    </pre>
-                </div>
-            </FormProvider>
-        </ContextProvider>
+        <FormProvider {...form}>
+            <div className="container p-20">
+                <h2 className="my-10 scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+                    Data Table
+                </h2>
+                {/* Toolbar */}
+                <Toolbar
+                    table={table}
+                    onAdd={handleAddRow}
+                    onDelete={handleDeleteRows}
+                    onGetInfo={() => console.log(form.getValues())}
+                    onCancel={handleCancel}
+                    onSubmit={handleSubmit}
+                />
+                <DataTable table={table} />
+                <pre className="mt-4">
+                    <code>
+                        Mode: {MODE_ICON[mode]} {mode}
+                    </code>
+                    <br></br>
+                    <code>
+                        Row Selection: {JSON.stringify(rowSelection, null, 2)}
+                    </code>
+                </pre>
+            </div>
+        </FormProvider>
     );
 }
