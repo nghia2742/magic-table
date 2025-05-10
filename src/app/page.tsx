@@ -84,7 +84,12 @@ export default function Home() {
     const handleSubmit = () => {
         console.log('Calling submission...');
         form.handleSubmit(
-            (data) => console.log({ data }),
+            (data) => {
+                console.log({ data });
+                form.reset(data);
+                setRowSelection({});
+                setMode('View');
+            },
             (errors) => console.log({ errors })
         )();
     };

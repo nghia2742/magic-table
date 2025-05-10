@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { Info } from 'lucide-react';
 import React, { ChangeEvent } from 'react';
 import { Control, useController } from 'react-hook-form';
@@ -8,14 +9,19 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from './ui/tooltip';
-import { cn } from '@/lib/utils';
 
 interface InputProps extends React.ComponentProps<'input'> {
     name: string;
     control: Control;
+    type?: 'string' | 'number';
 }
 
-function ControlledInput({ name, control, ...props }: InputProps) {
+function ControlledInput({
+    name,
+    control,
+    type = 'string',
+    ...props
+}: InputProps) {
     const {
         field,
         fieldState: { error },
@@ -23,8 +29,13 @@ function ControlledInput({ name, control, ...props }: InputProps) {
         control,
         name,
     });
+
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        field.onChange(e.target.value);
+        const value = e.target.value;
+        if (type === 'number') {
+            return field.onChange(Number(value));
+        }
+        field.onChange(value);
     };
 
     return (

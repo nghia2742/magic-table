@@ -57,6 +57,7 @@ function TableCell<TData, TValue>(cell: CellContext<TData, TValue>) {
             <ControlledInput
                 name={fieldName}
                 control={control}
+                type="number"
                 placeholder={'Enter Age.'}
             />
         ),
@@ -74,17 +75,16 @@ function TableCell<TData, TValue>(cell: CellContext<TData, TValue>) {
     }
 
     if (column.id === 'gender') {
+        const gender = genderItems.find((g) => g.value === getValue<string>());
         return (
             <Badge
                 className={
                     GENDER_COLOR_MAP[
-                        genderItems.findIndex(
-                            (gender) => gender.label === getValue<string>()
-                        )
+                        genderItems.findIndex((g) => g.value === gender?.value)
                     ]
                 }
             >
-                {getValue<string>()}
+                {gender?.label}
             </Badge>
         );
     }
