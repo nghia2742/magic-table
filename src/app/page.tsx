@@ -81,6 +81,10 @@ export default function Home() {
         setMode('View');
     };
 
+    const handleEditRows = () => {
+        setMode('Edit');
+    };
+
     const handleSubmit = () => {
         console.log('Calling submission...');
         form.handleSubmit(
@@ -110,6 +114,7 @@ export default function Home() {
                 <Toolbar
                     table={table}
                     onAdd={handleAddRow}
+                    onEdit={handleEditRows}
                     onDelete={handleDeleteRows}
                     onGetInfo={() => console.log(form.getValues())}
                     onCancel={handleCancel}

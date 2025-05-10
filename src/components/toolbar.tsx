@@ -3,13 +3,14 @@
 import { Account } from '@/constants';
 import { useMode } from '@/context/Context';
 import { Table } from '@tanstack/react-table';
-import { Info, PlusIcon, Settings, Trash } from 'lucide-react';
+import { Info, Pen, PlusIcon, Settings, Trash } from 'lucide-react';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
 
 interface ToolbarProps {
     table: Table<Account>;
     onAdd: () => void;
+    onEdit: () => void;
     onDelete: () => void;
     onGetInfo: () => void;
     onCancel: () => void;
@@ -19,12 +20,15 @@ interface ToolbarProps {
 function Toolbar({
     table,
     onAdd,
+    onEdit,
     onDelete,
     onGetInfo,
     onCancel,
     onSubmit,
 }: ToolbarProps) {
     const { mode } = useMode();
+    const isDisabledButton =
+        table.getIsSomeRowsSelected() || table.getIsAllRowsSelected();
 
     return (
         <div className="flex items-center justify-end gap-2 mb-4 h-5">
@@ -40,15 +44,23 @@ function Toolbar({
             <Button
                 variant="destructive"
                 onClick={onDelete}
-                disabled={
-                    !table.getIsSomeRowsSelected() &&
-                    !table.getIsAllRowsSelected()
-                }
+                disabled={!isDisabledButton}
             >
                 <Trash /> Delete
             </Button>
+            <Button
+                variant="outline"
+                onClick={onEdit}
+                disabled={!isDisabledButton}
+            >
+                <Pen /> Edit
+            </Button>
 
-            <Button variant="outline" onClick={onAdd}>
+            <Button
+                variant="outline"
+                onClick={onAdd}
+                disabled={isDisabledButton}
+            >
                 <PlusIcon /> Add
             </Button>
             <Button variant="outline" onClick={onGetInfo}>

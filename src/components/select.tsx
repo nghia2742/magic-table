@@ -40,7 +40,7 @@ function ControlledSelect({ name, control, ...props }: SelectProps) {
 
     return (
         <div className="relative">
-            <Select onValueChange={field.onChange}>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <SelectTrigger
                     className={cn('w-full bg-white', error && 'border-red-500')}
                     isError={Boolean(error)}

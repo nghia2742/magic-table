@@ -35,7 +35,7 @@ function ControlledInput({
         if (type === 'number') {
             return field.onChange(Number(value));
         }
-        field.onChange(value);
+        field.onChange(value.trim());
     };
 
     return (
@@ -45,6 +45,7 @@ function ControlledInput({
                 ref={field.ref}
                 onChange={handleInputChange}
                 className={cn('bg-white', error && 'border-red-500')}
+                defaultValue={field.value}
                 {...props}
             />
             {error && (

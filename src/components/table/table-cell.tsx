@@ -22,7 +22,7 @@ function TableCell<TData, TValue>(cell: CellContext<TData, TValue>) {
 
     const isEditableCell = useMemo(() => {
         return (
-            mode === 'Add' &&
+            mode !== 'View' &&
             Object.prototype.hasOwnProperty.call(
                 table.getState().rowSelection,
                 row.id
