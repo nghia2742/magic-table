@@ -51,7 +51,7 @@ function Toolbar({
             <Button
                 variant="outline"
                 onClick={onEdit}
-                disabled={!isDisabledButton}
+                disabled={!isDisabledButton || mode !== 'View'}
             >
                 <Pen /> Edit
             </Button>
@@ -59,7 +59,7 @@ function Toolbar({
             <Button
                 variant="outline"
                 onClick={onAdd}
-                disabled={isDisabledButton}
+                disabled={isDisabledButton && mode !== 'Add'}
             >
                 <PlusIcon /> Add
             </Button>
@@ -67,7 +67,7 @@ function Toolbar({
                 <Info />
             </Button>
 
-            <Button variant="outline" onClick={() => {}}>
+            <Button variant="outline" onClick={() => alert('Coming soon ...')}>
                 <Settings />
             </Button>
         </div>

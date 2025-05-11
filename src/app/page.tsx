@@ -11,6 +11,7 @@ import {
     RowSelectionState,
     useReactTable,
 } from '@tanstack/react-table';
+import { isEmpty } from 'lodash';
 import { useState } from 'react';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 
@@ -22,6 +23,7 @@ const MODE_ICON = {
 
 export default function Home() {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+    const [formInfo, setFormInfo] = useState({});
 
     const form = useForm({
         resolver: zodResolver(AccountsSchema),
@@ -116,20 +118,31 @@ export default function Home() {
                     onAdd={handleAddRow}
                     onEdit={handleEditRows}
                     onDelete={handleDeleteRows}
-                    onGetInfo={() => console.log(form.getValues())}
+                    onGetInfo={() => setFormInfo(form.getValues())}
                     onCancel={handleCancel}
                     onSubmit={handleSubmit}
                 />
                 <DataTable table={table} />
-                <pre className="mt-4">
-                    <code>
-                        Mode: {MODE_ICON[mode]} {mode}
-                    </code>
-                    <br></br>
-                    <code>
-                        Row Selection: {JSON.stringify(rowSelection, null, 2)}
-                    </code>
-                </pre>
+                <div className="grid grid-cols-3">
+                    <pre className="mt-4 col-span-1">
+                        <code>
+                            Mode: {MODE_ICON[mode]} {mode}
+                        </code>
+                        <br></br>
+                        <code>
+                            Row Selection:{' '}
+                            {JSON.stringify(rowSelection, null, 2)}
+                        </code>
+                    </pre>
+                    {!isEmpty(formInfo) && (
+                        <pre className="mt-4 col-span-1">
+                            <code>
+                                Form Information:
+                                {JSON.stringify(formInfo, null, 2)}
+                            </code>
+                        </pre>
+                    )}
+                </div>
             </div>
         </FormProvider>
     );

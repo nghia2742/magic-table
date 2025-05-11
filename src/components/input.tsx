@@ -45,7 +45,6 @@ function ControlledInput({
                 ref={field.ref}
                 onChange={handleInputChange}
                 className={cn('bg-white', error && 'border-red-500')}
-                defaultValue={field.value}
                 {...props}
             />
             {error && (
